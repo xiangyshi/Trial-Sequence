@@ -1,7 +1,5 @@
 Author: Xiangyu(Leo) Shi
 Project Start Date: October 18, 2023
-Description: This Python script uses numpy and tkinter to create a user interface
-for generating trial sequences for fan maze experiments at Dr. Rangel's Lab. (Edit)
 
 Version History:
 V0: Oct 18, implemented basic features for trial sequence permutation generating.
