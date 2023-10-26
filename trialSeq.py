@@ -1,11 +1,11 @@
 """
 Author: Xiangyu(Leo) Shi
 Date: October 18, 2023
-Description: This Python script uses numpy and tkinter to create a user interface
-for generating trial sequences for...
 
 Oct 24 Log: Added bias feature.
 Oct 25 Log: Greatly improved permutation efficiency.
+Oct 26 Log: Included directions for invalid entries.
+Oct 26 Log: Added executable for MacOS.
 """
 
 
