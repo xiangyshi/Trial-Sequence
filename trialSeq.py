@@ -350,7 +350,7 @@ forward_button = tk.Button(window, text="Forward >", command=forward)
 delete_button = tk.Button(window, text="Delete", command=delete)
 
 # Display window for generated permutation
-text_widget = tk.Text(window, wrap=tk.WORD, height=45, width=60)
+text_widget = tk.Text(window, wrap=tk.WORD, height=40, width=60)
 scrollbar = tk.Scrollbar(window, command=text_widget.yview)
 text_widget.config(yscrollcommand=scrollbar.set)
 
