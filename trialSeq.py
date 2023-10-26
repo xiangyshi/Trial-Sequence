@@ -5,6 +5,7 @@ Description: This Python script uses numpy and tkinter to create a user interfac
 for generating trial sequences for...
 
 Oct 24 Log: Added bias feature.
+Oct 25 Log: Greatly improved permutation efficiency.
 """
 
 
@@ -18,6 +19,7 @@ eighteen = np.concatenate((six, twelve), axis=0)
 twentyfour = np.concatenate((twelve, twelve), axis=0)
 
 # Constants and Messages
+START_MSG = '''Welcome to Trial Sequence V'''
 ERR_MSG = '''Please enter the balance values (6, 12, 18, 24)\nExample:\n6 6 6 12 12'''
 
 # Trial Generation
@@ -27,6 +29,22 @@ def isFlip(tup1, tup2):
     if tup1[0] == tup2[1] and tup1[1] == tup2[0]:
         return True
     return False
+
+def getIdx(pair):
+    if pair[0] == 5:
+        return 0
+    elif pair[0] == 6:
+        return 1
+    elif pair[0] == 7:
+        return 2
+    elif pair[0] == 8:
+        return 3
+    elif pair[0] == 9:
+        return 4
+    elif pair[0] == 10:
+        return 5
+    else:
+        raise Exception("Illegal Bias")
 
 def checkProperty(arr):
     if len(arr) < 2:
@@ -58,6 +76,58 @@ def balanceByTwentyFour():
     np.random.shuffle(twentyfour)
     while not checkProperty(twentyfour):
         np.random.shuffle(twentyfour)
+    return twentyfour
+
+def biasTwelve(pair):
+    #bias setup
+    bias = pair[0]
+    plug = np.array([pair, pair])
+    six = np.array([(5, 8), (6, 9), (7, 10), (8, 5), (9, 6), (10, 7)])
+    idx = getIdx(pair)
+    six = np.delete(six, idx, axis=0)
+
+
+    twelve = np.concatenate((six, six), axis=0)
+    np.random.shuffle(twelve)
+    while not checkProperty(twelve):
+        np.random.shuffle(twelve)
+    
+    randIdx = np.random.randint(0, len(twelve))
+    twelve = np.insert(twelve, randIdx, plug, axis=0)
+    return twelve
+
+def biasEighteen(pair):
+    #bias setup
+    bias = pair[0]
+    plug = np.array([pair, pair, pair])
+    six = np.array([(5, 8), (6, 9), (7, 10), (8, 5), (9, 6), (10, 7)])
+    idx = getIdx(pair)
+    six = np.delete(six, idx, axis=0)
+
+    eighteen = np.concatenate((six, six, six), axis=0)
+    np.random.shuffle(eighteen)
+    while not checkProperty(eighteen):
+        np.random.shuffle(eighteen)
+    
+    randIdx = np.random.randint(0, len(eighteen))
+    eighteen = np.insert(eighteen, randIdx, plug, axis=0)
+    return eighteen
+
+def biasTwentyfour(pair):
+    #bias setup
+    bias = pair[0]
+    plug = np.array([pair, pair, pair, pair])
+    six = np.array([(5, 8), (6, 9), (7, 10), (8, 5), (9, 6), (10, 7)])
+    idx = getIdx(pair)
+    six = np.delete(six, idx, axis=0)
+
+    twentyfour = np.concatenate((six, six, six, six), axis=0)
+    np.random.shuffle(twentyfour)
+    while not checkProperty(twentyfour):
+        np.random.shuffle(twentyfour)
+    
+    randIdx = np.random.randint(0, len(twentyfour))
+    twentyfour = np.insert(twentyfour, randIdx, plug, axis=0)
     return twentyfour
 
 def checkBias(arr, pair, k):
@@ -93,19 +163,19 @@ def permutation(balance, bias):
     if balance == 6:
         return balanceBySix()
     elif balance == 12:
-        twelve = balanceByTwelve()
-        while not checkBias(twelve, pair, 2):
-            twelve = balanceByTwelve()
+        twelve = biasTwelve(pair)
+        while not checkProperty(twelve):
+            twelve = biasTwelve(pair)
         return twelve
     elif balance == 18:
-        eighteen = balanceByEighteen()
-        while not checkBias(eighteen, pair, 3):
-            eighteen = balanceByEighteen()
+        eighteen = biasEighteen(pair)
+        while not checkProperty(eighteen):
+            eighteen = biasEighteen(pair)
         return eighteen
     elif balance == 24:
-        twentyfour = balanceByTwentyFour()
-        while not checkBias(twentyfour, pair, 4):
-            twentyfour = balanceByTwentyFour()
+        twentyfour = biasTwentyfour(pair)
+        while not checkProperty(twentyfour):
+            twentyfour = biasTwentyfour(pair)
         return twentyfour
     raise Exception("Illegal Balance Factor: " + str(balance))
 
@@ -144,7 +214,6 @@ def balanceTrial(arrstr, bias):
         curr = permutation(n, b)
         if len(total) != 0:
             total = np.concatenate((total, curr), axis=0)
-            print(total)
         else:
             total = curr
 
