@@ -6,30 +6,34 @@ for generating trial sequences for fan maze experiments at Dr. Rangel's Lab. (Ed
 Version History:
 V0: Oct 18, implemented basic features for trial sequence permutation generating.
 V1: Oct 25, added bias feature.
-
+V2: Oct 25, improved efficiency
+V3: Oct 26, added invalid entry directions
+V4: Oct 26, added executable
 
 HOW TO USE
-0. Download trialSeq.py to Desktop folder
+0. Make sure you are using MacOS. (Only Mac for now)
 
-1. Executing trialSeq.py
-    a. Open terminal
-    b. type in: cd ~/Desktop/
-    c. type in: python -m trialSeq.py
-        - You may or may not need to download extra packages
-            i. type in: pip install numpy
-            ii. type in: pip install tkinter
+1. Download zipfile from Code tab.
+
+1. Executing
+    a. Unzip Trial-Sequence-main.zip
+    b. Enter Trial-Sequence-main folder
+    c. Enter dist folder
+    d. Double click executable trialSeq
+        - Takes around 20 seconds
 
 2. Using the application
-    Upon executing trialSeq.py, the application window should spawn.
+    Upon executing trialSeq, an application window should spawn.
     From top to bottom:
         a. Entry for trial balance factors (i.e. 6 6 12 12 12)
-            - Enter 6, 12, 18, or 24 in a sequence with spaces between.
+            - Enter 6, 12, 18, or 24 in a sequence with one single space between each factor.
         b. Entry for bias factor
-            - Enter -1 for no bias, or 6 - 10 for any bias.
+            - Enter -1 for no bias, or 5 - 10 for any bias.
+            - The biased trials will be grouped.
         c. Spawn trials button
             - Generates a random trial sequence given balance factors and bias.
         d. Copy trials button
-            - Copies current generated trial sequence to clipboard to paste.
+            - Copies current generated trial sequence to clipboard for pasting.
         e. Trial Text-Widget
             - Text box that displays generated trial sequence
         f. Back, Delete, Forward
@@ -37,5 +41,5 @@ HOW TO USE
             - Delete current sequence
             - Check next generated sequence
 
-Last Updated: Oct 25, 2023
+Last Updated: V4 Oct 26, 2023
         
