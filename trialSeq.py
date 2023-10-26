@@ -20,7 +20,7 @@ twentyfour = np.concatenate((twelve, twelve), axis=0)
 
 # Constants and Messages
 START_MSG = '''Welcome to Trial Sequence V'''
-ERR_MSG = '''Please enter the balance values (6, 12, 18, 24)\nExample:\n6 6 6 12 12'''
+ERR_MSG = '''Please enter the balance values (6, 12, 18, 24) \nExample: \n6 6 6 12 12 \nPlease enter a bias between 5 and 10 \nor -1 for no bias.'''
 
 # Trial Generation
 # Recursively generate trials based on given rule
@@ -180,35 +180,57 @@ def permutation(balance, bias):
     raise Exception("Illegal Balance Factor: " + str(balance))
 
 def balanceTrial(arrstr, bias):
-    try:
-        b = int(bias)
-    except Exception as e:
-        text_widget.config(state='normal')
-        text_widget.delete(1.0, tk.END)
-        text_widget.insert(tk.END, ERR_MSG)
-        text_widget.config(state='disabled')
-        print('bad bias')
-        return [], []
-
+    #Check balance entry non-empty
     arr = arrstr.strip().split(' ')
     if len(arr) == 0:
         text_widget.config(state='normal')
         text_widget.delete(1.0, tk.END)
-        text_widget.insert(tk.END, ERR_MSG)
+        text_widget.insert(tk.END, ERR_MSG + '\n\nError: No balance factor received.')
         text_widget.config(state='disabled')
         print("len bad")
         return [], []
     
+    #Check balance entry all ints
     try:
         arr = [int(i) for i in arr]
     except Exception as e:
         text_widget.config(state='normal')
         text_widget.delete(1.0, tk.END)
-        text_widget.insert(tk.END, ERR_MSG)
+        text_widget.insert(tk.END, ERR_MSG + '\n\nError: Non-integer balance factor received.')
         text_widget.config(state='disabled')
         print('except')
         return [], []
 
+    #Check balance entry all valid
+    good = [6, 12, 18, 24]
+    for i in arr:
+        if i not in good:
+            text_widget.config(state='normal')
+            text_widget.delete(1.0, tk.END)
+            text_widget.insert(tk.END, ERR_MSG + '\n\nError: Invalid balance factor.')
+            text_widget.config(state='disabled')
+            return [], []
+
+    #Check valid bias
+    try:
+        #Invalid type
+        b = int(bias)
+        #Invalid bias
+        if b > 10 or b < 5:
+            if b != -1:
+                text_widget.config(state='normal')
+                text_widget.delete(1.0, tk.END)
+                text_widget.insert(tk.END, ERR_MSG + '\n\nError: Invalid bias value.')
+                text_widget.config(state='disabled')
+    except Exception as e:
+        text_widget.config(state='normal')
+        text_widget.delete(1.0, tk.END)
+        text_widget.insert(tk.END, ERR_MSG + '\n\nError: Non-integer bias recieved.')
+        text_widget.config(state='disabled')
+        print('bad bias')
+        return [], []
+    
+    #Passed sanity check
     total = np.array([])
     for n in arr:
         curr = permutation(n, b)
@@ -305,8 +327,12 @@ window.title('Trial Sequence')
 window.geometry("400x1000")
 
 # User entry for trial balance and bias input
-entry = tk.Entry(window, width=30)
+entry = tk.Entry(window, width=20)
 bias = tk.Entry(window, width=10)
+
+# Labels for Entries
+entry_label = tk.Label(window, text='Balance:')
+bias_label = tk.Label(window, text='Bias:')
 
 # Generate trial permutation based on entry
 spawnTrials = tk.Button(window, text="Spawn Trials", command=lambda: displayTrials(*balanceTrial(entry.get(), bias.get())))
@@ -329,7 +355,9 @@ scrollbar = tk.Scrollbar(window, command=text_widget.yview)
 text_widget.config(yscrollcommand=scrollbar.set)
 
 # Position organization of components
+entry_label.place(x=5,y=3)
 entry.pack()
+bias_label.place(x=27,y=30)
 bias.pack()
 spawnTrials.pack()
 copy_button.pack()
